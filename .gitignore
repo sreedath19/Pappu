@@ -1,0 +1,39 @@
+### Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.log
+
+# Virtual environments
+.env
+.venv
+venv/
+env/
+
+### macOS
+.DS_Store
+
+### Editor / IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+### Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraform.lock.hcl
+
+### Local environment / secrets (if you use them)
+*.tfvars
+*.tfvars.json
+*.env.*
+
