@@ -1,7 +1,7 @@
 variable "project_name" {
   description = "Short name for this project, used in resource naming."
   type        = string
-  default     = "asbitech"
+  default     = "pappu"
 }
 
 variable "environment" {
@@ -19,7 +19,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Optional explicit resource group name. If empty, one will be generated."
   type        = string
-  default     = "asbitech"
+  default     = "pappu"
 }
 
 variable "tags" {
