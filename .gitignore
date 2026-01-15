@@ -36,4 +36,6 @@ override.tf.json
 *.tfvars
 *.tfvars.json
 *.env.*
-
+sp-output.json
+Pappu.code-workspace
+CI_CD_SETUP.md
