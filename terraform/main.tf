@@ -51,6 +51,7 @@ resource "azurerm_storage_account" "pdf" {
     default_action             = "Deny"
     bypass                     = ["AzureServices"]
     virtual_network_subnet_ids = [azurerm_subnet.app.id]
+    ip_rules                   = ["106.222.203.170"]
   }
 
   tags = azurerm_resource_group.this.tags
@@ -58,7 +59,7 @@ resource "azurerm_storage_account" "pdf" {
 
 resource "azurerm_storage_container" "pdf_uploads" {
   name                  = "pdf-uploads"
-  storage_account_name  = azurerm_storage_account.pdf.name
+  storage_account_id    = azurerm_storage_account.pdf.id
   container_access_type = "private"
 }
 
