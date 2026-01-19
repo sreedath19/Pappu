@@ -31,7 +31,9 @@ resource "azurerm_subnet" "app" {
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["10.10.1.0/24"]
-  service_endpoints = ["Microsoft.Storage"]
+  service_endpoints = ["Microsoft.Storage", "Microsoft.KeyVault"]
+
+
 }
 
 resource "azurerm_storage_account" "pdf" {
@@ -56,7 +58,7 @@ resource "azurerm_storage_account" "pdf" {
 
 resource "azurerm_storage_container" "pdf_uploads" {
   name                  = "pdf-uploads"
-  storage_account_name  = azurerm_storage_account.pdf.name
+  storage_account_name  = azurerm_storage_account.pdf.id
   container_access_type = "private"
 }
 
