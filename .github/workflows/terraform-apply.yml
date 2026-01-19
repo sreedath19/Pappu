@@ -1,5 +1,7 @@
 name: Terraform Apply
 
+permissions:
+  id-token: write
 on:
   push:
     branches:
