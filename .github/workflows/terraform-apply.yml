@@ -1,6 +1,8 @@
 name: Terraform Apply
 
 permissions:
+  contents: read
+  pages: write
   id-token: write
 on:
   push:
@@ -42,7 +44,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: ${{ env.TF_VERSION }}
-          terraform_wrapper: false
+          terraform_wrapper: true
 
       - name: Terraform Init
         id: init
@@ -63,7 +65,7 @@ jobs:
       - name: Terraform Output
         id: output
         if: steps.apply.outcome == 'success'
-        run: terraform output -json > tf_output.json
+        run: terraform output -json | tee tf_output.json
 
       - name: Upload Terraform Output
         if: steps.apply.outcome == 'success'
