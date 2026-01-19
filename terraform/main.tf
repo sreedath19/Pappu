@@ -58,7 +58,7 @@ resource "azurerm_storage_account" "pdf" {
 
 resource "azurerm_storage_container" "pdf_uploads" {
   name                  = "pdf-uploads"
-  storage_account_name  = azurerm_storage_account.pdf.id
+  storage_account_name  = azurerm_storage_account.pdf.name
   container_access_type = "private"
 }
 

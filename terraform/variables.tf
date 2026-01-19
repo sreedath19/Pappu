@@ -31,3 +31,8 @@ variable "tags" {
   }
 }
 
+
+variable "subscription_id" {
+  description = "The Azure Subscription ID to use."
+  type        = string
+}
