@@ -35,6 +35,18 @@ jobs:
           creds: ${{ env.AZURE_CREDENTIALS }}
           enable-AzPSSession: true
 
+      - name: Get Runner IP
+        id: ip
+        run: echo "ip=$(curl -s ifconfig.me)" >> $GITHUB_OUTPUT
+
+      - name: Whitelist Runner IP
+        run: |
+          az storage account network-rule add \
+            --resource-group pappu \
+            --account-name pappudevpdfsa \
+            --ip-address ${{ steps.ip.outputs.ip }}
+
+
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
@@ -57,7 +69,7 @@ jobs:
       - name: Terraform Plan
         id: plan
         run: |
-          terraform plan -no-color -out=tfplan
+          terraform plan -no-color -out=tfplan -var "subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" -input=false
         continue-on-error: true
 
       - name: Comment PR
@@ -93,3 +105,12 @@ jobs:
       - name: Terraform Plan Status
         if: steps.plan.outcome == 'failure'
         run: exit 1
+
+      - name: Cleanup Runner IP
+        if: always()
+        run: |
+          az storage account network-rule remove \
+            --resource-group pappu \
+            --account-name pappudevpdfsa \
+            --ip-address ${{ steps.ip.outputs.ip }}
+
