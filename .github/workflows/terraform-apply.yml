@@ -68,11 +68,11 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -no-color -out=tfplan
+        run: terraform plan -no-color -out=tfplan -var "subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" -input=false
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -auto-approve -no-color tfplan
+        run: terraform apply -auto-approve -no-color tfplan -var "subscription_id=${{ env.ARM_SUBSCRIPTION_ID }}" -input=false
 
       - name: Terraform Output
         id: output
