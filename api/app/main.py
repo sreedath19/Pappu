@@ -52,25 +52,25 @@ async def upload_pdf(file: UploadFile = File(...)):
         raise HTTPException(status_code=400, detail="Only PDF files are allowed.")
 
     try:
-    # Ensure filename is safe-ish (you can harden this if needed)
-    filename = os.path.basename(file.filename)
-    if not filename.lower().endswith(".pdf"):
-      filename = f"{filename}.pdf"
+        # Ensure filename is safe-ish (you can harden this if needed)
+        filename = os.path.basename(file.filename)
+        if not filename.lower().endswith(".pdf"):
+            filename = f"{filename}.pdf"
 
-    blob_service_client = get_blob_service_client()
-    container_client = blob_service_client.get_container_client(PDF_CONTAINER_NAME)
-    # Create container if it does not already exist (idempotent)
-    try:
-      container_client.create_container()
-    except Exception:
-      # Likely already exists or you don't have permission to create; ignore in that case
-      pass
+        blob_service_client = get_blob_service_client()
+        container_client = blob_service_client.get_container_client(PDF_CONTAINER_NAME)
+        # Create container if it does not already exist (idempotent)
+        try:
+            container_client.create_container()
+        except Exception:
+            # Likely already exists or you don't have permission to create; ignore in that case
+            pass
 
-    blob_client = container_client.get_blob_client(filename)
-    contents = await file.read()
-    blob_client.upload_blob(contents, overwrite=True)
+        blob_client = container_client.get_blob_client(filename)
+        contents = await file.read()
+        blob_client.upload_blob(contents, overwrite=True)
     except Exception as exc:
-    raise HTTPException(status_code=500, detail=f"Failed to upload file to blob storage: {exc}")
+        raise HTTPException(status_code=500, detail=f"Failed to upload file to blob storage: {exc}")
     finally:
         await file.close()
 
@@ -89,50 +89,50 @@ async def upload_pdf(file: UploadFile = File(...)):
 )
 async def upload_pdfs(files: List[UploadFile] = File(...)):
     saved_files = []
-  try:
-    blob_service_client = get_blob_service_client()
-    container_client = blob_service_client.get_container_client(PDF_CONTAINER_NAME)
     try:
-      container_client.create_container()
-    except Exception:
-      pass
+        blob_service_client = get_blob_service_client()
+        container_client = blob_service_client.get_container_client(PDF_CONTAINER_NAME)
+        try:
+            container_client.create_container()
+        except Exception:
+            pass
 
-    for file in files:
-      if file.content_type not in ("application/pdf", "application/x-pdf"):
+        for file in files:
+            if file.content_type not in ("application/pdf", "application/x-pdf"):
+                raise HTTPException(
+                    status_code=400,
+                    detail=f"File '{file.filename}' is not a valid PDF.",
+                )
+
+            filename = os.path.basename(file.filename)
+            if not filename.lower().endswith(".pdf"):
+                filename = f"{filename}.pdf"
+
+            try:
+                contents = await file.read()
+                blob_client = container_client.get_blob_client(filename)
+                blob_client.upload_blob(contents, overwrite=True)
+                saved_files.append(filename)
+            except Exception as exc:
+                raise HTTPException(
+                    status_code=500,
+                    detail=f"Failed to upload file '{file.filename}' to blob storage: {exc}",
+                )
+            finally:
+                await file.close()
+    except HTTPException:
+        # re-raise validation or upload errors
+        raise
+    except Exception as exc:
         raise HTTPException(
-          status_code=400,
-          detail=f"File '{file.filename}' is not a valid PDF.",
+            status_code=500,
+            detail=f"Unexpected error while uploading files: {exc}",
         )
-
-      filename = os.path.basename(file.filename)
-      if not filename.lower().endswith(".pdf"):
-        filename = f"{filename}.pdf"
-
-      try:
-        contents = await file.read()
-        blob_client = container_client.get_blob_client(filename)
-        blob_client.upload_blob(contents, overwrite=True)
-        saved_files.append(filename)
-      except Exception as exc:
-        raise HTTPException(
-          status_code=500,
-          detail=f"Failed to upload file '{file.filename}' to blob storage: {exc}",
-        )
-      finally:
-        await file.close()
-  except HTTPException:
-    # re-raise validation or upload errors
-    raise
-  except Exception as exc:
-    raise HTTPException(
-      status_code=500,
-      detail=f"Unexpected error while uploading files: {exc}",
-    )
 
     return JSONResponse(
         {
             "message": "Files uploaded successfully.",
-      "files": saved_files,
+            "files": saved_files,
         }
     )
 
