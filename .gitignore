@@ -39,3 +39,4 @@ override.tf.json
 sp-output.json
 Pappu.code-workspace
 CI_CD_SETUP.md
+grant_owner_role.sh
