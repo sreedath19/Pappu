@@ -38,3 +38,12 @@ output "key_vault_name" {
   description = "Name of the Key Vault."
 }
 
+output "acr_login_server" {
+  value       = azurerm_container_registry.acr.login_server
+  description = "Login server for the Azure Container Registry."
+}
+
+output "container_app_fqdn" {
+  value       = azurerm_container_app.api.latest_revision_fqdn
+  description = "FQDN of the Container App."
+}
