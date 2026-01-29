@@ -39,6 +39,7 @@ resource "azurerm_subnet" "aca" {
   resource_group_name  = azurerm_resource_group.this.name
   virtual_network_name = azurerm_virtual_network.this.name
   address_prefixes     = ["10.10.2.0/23"]
+  service_endpoints    = ["Microsoft.Storage"]
 
   delegation {
     name = "delegation"
@@ -64,8 +65,8 @@ resource "azurerm_storage_account" "pdf" {
   network_rules {
     default_action             = "Deny"
     bypass                     = ["AzureServices"]
-    virtual_network_subnet_ids = [azurerm_subnet.app.id]
-    ip_rules                   = ["106.222.203.170"]
+    virtual_network_subnet_ids = [azurerm_subnet.app.id, azurerm_subnet.aca.id]
+    ip_rules                   = ["106.222.203.170", "106.222.200.124", "106.222.202.205"]
   }
 
   tags = azurerm_resource_group.this.tags

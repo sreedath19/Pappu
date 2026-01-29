@@ -78,7 +78,6 @@ async def upload_pdf(file: UploadFile = File(...)):
         {
             "message": "File uploaded successfully.",
             "filename": filename,
-            "path": str(destination),
         }
     )
 
