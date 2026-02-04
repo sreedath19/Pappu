@@ -60,7 +60,7 @@ resource "azurerm_storage_account" "pdf" {
 
   min_tls_version               = "TLS1_2"
   https_traffic_only_enabled    = true
-  public_network_access_enabled = false
+  public_network_access_enabled = true
 
   network_rules {
     default_action             = "Deny"
