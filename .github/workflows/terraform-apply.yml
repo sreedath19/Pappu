@@ -47,10 +47,14 @@ jobs:
 
       - name: Whitelist Runner IP
         run: |
-          az storage account network-rule add \
-            --resource-group pappu \
-            --account-name pappudevpdfsa \
-            --ip-address ${{ steps.ip.outputs.ip }}
+          if az storage account show --name pappudevpdfsa --resource-group pappu &>/dev/null; then
+            az storage account network-rule add \
+              --resource-group pappu \
+              --account-name pappudevpdfsa \
+              --ip-address ${{ steps.ip.outputs.ip }}
+          else
+            echo "Storage account 'pappudevpdfsa' not found. Skipping IP whitelist."
+          fi
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
@@ -119,7 +123,11 @@ jobs:
       - name: Cleanup Runner IP
         if: always()
         run: |
-          az storage account network-rule remove \
-            --resource-group pappu \
-            --account-name pappudevpdfsa \
-            --ip-address ${{ steps.ip.outputs.ip }}
+          if az storage account show --name pappudevpdfsa --resource-group pappu &>/dev/null; then
+            az storage account network-rule remove \
+              --resource-group pappu \
+              --account-name pappudevpdfsa \
+              --ip-address ${{ steps.ip.outputs.ip }}
+          else
+            echo "Storage account 'pappudevpdfsa' not found. Skipping IP cleanup."
+          fi
