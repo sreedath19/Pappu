@@ -19,7 +19,7 @@ variable "location" {
 variable "resource_group_name" {
   description = "Optional explicit resource group name. If empty, one will be generated."
   type        = string
-  default     = ""
+  default     = "pappu"
 }
 
 variable "tags" {
