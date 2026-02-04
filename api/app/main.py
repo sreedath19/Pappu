@@ -76,7 +76,7 @@ async def upload_pdf(file: UploadFile = File(...)):
 
     return JSONResponse(
         {
-            "message": "File uploaded successfully.",
+            "message": "File uploaded successfully, all good",
             "filename": filename,
         }
     )
